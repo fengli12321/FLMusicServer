@@ -28,11 +28,11 @@ SECRET_KEY = 'b(je^(2@$9_p5(&&ds!-9y5vh9^hc43*lq=*g!zvb0$i*dh(3*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-AUTH_USER_MODEL = "users.UserProfile"
+AUTH_USER_MODEL = "users.UserProfile"  # 自定义用户
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
