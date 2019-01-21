@@ -12,6 +12,7 @@ from .serializers import VerifyCodeSerializer, UserRegSerializer
 
 
 class VerifyCodeViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = VerifyCode.objects.all()
     serializer_class = VerifyCodeSerializer
 
     def generate_code(self):
