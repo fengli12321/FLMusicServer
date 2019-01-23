@@ -2,8 +2,38 @@ from datetime import datetime, timedelta
 
 
 from rest_framework import serializers
+from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler, JSONWebTokenSerializer
+from django.db.models import Q
 
 from .models import VerifyCode, UserProfile
+
+
+class LoginSerializer(JSONWebTokenSerializer):
+
+    def validate_username(self, username):
+        user = UserProfile.objects.filter(Q(username=username)|Q(mobile=username))
+
+        if user.count() == 0:
+            raise serializers.ValidationError("用户不存在")
+        return username
+    def validate(self, attrs):
+        username = attrs["username"]
+        password = attrs["password"]
+        user = UserProfile.objects.get(Q(username=username) | Q(mobile=username))
+        if user.check_password(password):
+            if not user.is_active:
+                msg = _('User account is disabled.')
+                raise serializers.ValidationError(msg)
+
+            payload = jwt_payload_handler(user)
+
+            return {
+                'token': jwt_encode_handler(payload),
+                'user': user
+            }
+        else:
+            raise serializers.ValidationError("密码错误")
+
 
 class VerifyCodeSerializer(serializers.Serializer):
 
@@ -20,6 +50,7 @@ class VerifyCodeSerializer(serializers.Serializer):
         return mobile
 
 
+
 class UserRegSerializer(serializers.ModelSerializer):
 
     code = serializers.CharField(max_length=6, write_only=True)
@@ -31,6 +62,11 @@ class UserRegSerializer(serializers.ModelSerializer):
         write_only=True,
         required=True
     )
+    def validate_mobile(self, mobile):
+        user = UserProfile.objects.filter(mobile=mobile)
+        if user.count():
+            raise serializers.ValidationError("用户已存在")
+        return mobile
 
     def validate_password(self, password):
         if len(password) < 6:

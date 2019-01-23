@@ -17,7 +17,9 @@ Including another URLconf
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from users.views import VerifyCodeViewSet, UserViewSet
+from users.views import VerifyCodeViewSet, UserViewSet, LoginView
+
+from rest_framework_jwt.views import obtain_jwt_token
 
 
 router = DefaultRouter()
@@ -27,7 +29,10 @@ router.register(r'getsmscode', VerifyCodeViewSet, base_name="getsmscode")
 # 注册
 router.register(r'register', UserViewSet, base_name="register")
 
+
+
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('login/', LoginView.as_view()),
 ]
