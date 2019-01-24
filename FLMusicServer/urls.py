@@ -15,10 +15,13 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-
-from users.views import VerifyCodeViewSet, UserViewSet
-
+from rest_framework.documentation import include_docs_urls
+import xadmin
+from users.views import VerifyCodeViewSet, UserViewSet, LoginView
+from musics.views import musicViewSet
 
 router = DefaultRouter()
 # 获取注册验证码
@@ -27,7 +30,13 @@ router.register(r'getsmscode', VerifyCodeViewSet, base_name="getsmscode")
 # 注册
 router.register(r'register', UserViewSet, base_name="register")
 
+# 音乐列表
+router.register(r'musics', musicViewSet, base_name="musics")
+
 urlpatterns = [
+    path('xadmin/', xadmin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('', include(router.urls))
-]
+    path('docs/', include_docs_urls("Fox Music 文档")),
+    path('', include(router.urls)),
+    path('login/', LoginView.as_view()),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

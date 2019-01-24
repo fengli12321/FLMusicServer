@@ -7,6 +7,10 @@ __pycache__/
 *.so
 
 .idea
+
+
+# 资源文件
+media/
 # Distribution / packaging
 .Python
 build/
