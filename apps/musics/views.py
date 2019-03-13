@@ -6,12 +6,13 @@ from rest_framework import mixins, viewsets
 from rest_framework.pagination import CursorPagination
 from django.utils.six.moves.urllib import parse as urlparse
 from .models import Music
-from .serializers import MusicSerializer
+from .serializers import MusicSerializer, RecommendSerializer
 
 # Create your views here.
 
 class MusicPagination(CursorPagination):
     ordering = "-add_time"
+    page_size = 12
     def encode_cursor(self, cursor):
         """
         Given a Cursor instance, return an url with encoded cursor.
@@ -32,4 +33,9 @@ class musicViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Music.objects.all()
     serializer_class = MusicSerializer
     pagination_class = MusicPagination
+
+
+class RecommendViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Music.objects.all().order_by('-like_num')[:5]
+    serializer_class = RecommendSerializer
 

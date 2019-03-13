@@ -21,7 +21,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 import xadmin
 from users.views import VerifyCodeViewSet, UserViewSet, LoginView
-from musics.views import musicViewSet
+from musics.views import musicViewSet, RecommendViewSet
 
 router = DefaultRouter()
 # 获取注册验证码
@@ -33,10 +33,13 @@ router.register(r'register', UserViewSet, base_name="register")
 # 音乐列表
 router.register(r'musics', musicViewSet, base_name="musics")
 
+# 推荐列表
+router.register(r'recommend', RecommendViewSet, base_name="recommend")
+
 urlpatterns = [
-    path('xadmin/', xadmin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('docs/', include_docs_urls("Fox Music 文档")),
-    path('', include(router.urls)),
-    path('login/', LoginView.as_view()),
+    path(r'xadmin/', xadmin.site.urls),
+    path(r'api-auth/', include('rest_framework.urls')),
+    path(r'docs/', include_docs_urls("Fox Music 文档")),
+    path(r'', include(router.urls)),
+    path(r'login/', LoginView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

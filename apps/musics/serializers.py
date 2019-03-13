@@ -5,3 +5,8 @@ class MusicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Music
         fields = "__all__"
+
+class RecommendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Music
+        fields = "__all__"
